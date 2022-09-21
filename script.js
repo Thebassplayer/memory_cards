@@ -152,7 +152,8 @@ addContainer.addEventListener("click", () =>
 );
 
 // Add new card
-addCardBtn.addEventListener("click", () => {
+addCardBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
   const question = questionEl.value;
   const answer = answerEl.value;
 
@@ -178,4 +179,12 @@ clearBtn.addEventListener("click", () => {
   localStorage.clear();
   cardsContainer.innerHTML = "";
   window.location.reload();
+});
+
+questionEl.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
+
+answerEl.addEventListener("click", (e) => {
+  e.stopPropagation();
 });

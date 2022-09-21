@@ -3,12 +3,26 @@ const cardsContainer = document.getElementById("cards-container"),
   nextBtn = document.getElementById("next"),
   currentEl = document.getElementById("current"),
   showBtn = document.getElementById("show"),
-  hideBtn = document.getElementById("hide"),
   questionEl = document.getElementById("question"),
   answerEl = document.getElementById("answer"),
   addCardBtn = document.getElementById("add-card"),
-  clearBtn = document.getElementById("clear"),
+  clearBtn = document.getElementById("clear-all"),
   addContainer = document.getElementById("add-container");
+
+const initCardsData = [
+  {
+    question: "What must a variable begin with",
+    answer: "A letter, $ or _",
+  },
+  {
+    question: "What is a variable",
+    answer: "A container for a piece of data",
+  },
+  {
+    question: "Example oc Case Sensitive",
+    answer: "thisIsAVariable",
+  },
+];
 
 // Keep track current card
 let currentActiveCard = 0;
@@ -18,21 +32,6 @@ const cardsEl = [];
 
 // Store card data
 const cardsData = getCardsData();
-
-// const cardsData = [
-//   {
-//     question: "What must a variable begin with",
-//     answer: "A letter, $ or _",
-//   },
-//   {
-//     question: "What is a variable",
-//     answer: "A container for a piece of data",
-//   },
-//   {
-//     question: "Example oc Case Sensitive",
-//     answer: "thisIsAVariable",
-//   },
-// ];
 
 // Create all cards
 function createCards() {
@@ -65,7 +64,7 @@ function createCard(data, index) {
 
   card.addEventListener("click", () => card.classList.toggle("show-answer"));
 
-  // Add to DOM cards
+  // Add cards to DOM
   cardsEl.push(card);
 
   cardsContainer.appendChild(card);
@@ -87,9 +86,28 @@ function getCardsData() {
 // Add card to local storage
 function setCardsData(cards) {
   localStorage.setItem("cards", JSON.stringify(cards));
-
-  window.location.reload();
 }
+
+//
+
+// Generate cards
+function generateInitCards(initCards) {
+  if (!cardsData[0]) {
+    initCards.forEach((card) => {
+      const question = card.question;
+      const answer = card.answer;
+
+      if (question.trim() && answer.trim()) {
+        const newCard = { question, answer };
+
+        cardsData.push(newCard);
+        setCardsData(cardsData);
+      }
+    });
+  }
+}
+
+generateInitCards(initCardsData);
 
 createCards();
 
@@ -129,7 +147,9 @@ prevBtn.addEventListener("click", () => {
 showBtn.addEventListener("click", () => addContainer.classList.add("show"));
 
 // Hide add container
-hideBtn.addEventListener("click", () => addContainer.classList.remove("show"));
+addContainer.addEventListener("click", () =>
+  addContainer.classList.remove("show")
+);
 
 // Add new card
 addCardBtn.addEventListener("click", () => {
@@ -149,6 +169,8 @@ addCardBtn.addEventListener("click", () => {
     cardsData.push(newCard);
     setCardsData(cardsData);
   }
+
+  window.location.reload();
 });
 
 // Clear cards button

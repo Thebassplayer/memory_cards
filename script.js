@@ -2,12 +2,14 @@ const cardsContainer = document.getElementById("cards-container"),
   prevBtn = document.getElementById("prev"),
   nextBtn = document.getElementById("next"),
   currentEl = document.getElementById("current"),
-  showBtn = document.getElementById("show"),
+  showBtn = document.getElementById("add-custom-card"),
   questionEl = document.getElementById("question"),
   answerEl = document.getElementById("answer"),
   addCardBtn = document.getElementById("add-card"),
-  clearBtn = document.getElementById("clear-all"),
-  addContainer = document.getElementById("add-container");
+  clearBtn = document.getElementById("delete-all"),
+  addContainer = document.getElementById("add-container"),
+  numOfInitialCards = 3,
+  displayedCards = [];
 
 const initCardsData = [
   {
@@ -20,6 +22,18 @@ const initCardsData = [
   },
   {
     question: "Example oc Case Sensitive",
+    answer: "thisIsAVariable",
+  },
+  {
+    question: "What is Hoisting",
+    answer: "A letter, $ or _",
+  },
+  {
+    question: "What is Scope",
+    answer: "A container for a piece of data",
+  },
+  {
+    question: "What is Bubling",
     answer: "thisIsAVariable",
   },
 ];
@@ -88,22 +102,41 @@ function setCardsData(cards) {
   localStorage.setItem("cards", JSON.stringify(cards));
 }
 
-//
+// Random Card Generator
+function randomCardGenerator(displayedCards) {
+  let randomCardsNum;
+
+  while (displayedCards.some((el) => el === randomCardsNum)) {
+    randomCardsNum = parseInt(Math.random() * initCardsData.length);
+  }
+  return randomCardsNum;
+}
+
+console.log(randomCardGenerator(displayedCards));
 
 // Generate cards
 function generateInitCards(initCards) {
   if (!cardsData[0]) {
-    initCards.forEach((card) => {
-      const question = card.question;
-      const answer = card.answer;
+    let count = 0;
 
-      if (question.trim() && answer.trim()) {
-        const newCard = { question, answer };
+    while (count < numOfInitialCards) {
+      let randomCardsNum = parseInt(Math.random() * initCards.length);
 
-        cardsData.push(newCard);
-        setCardsData(cardsData);
+      if (!displayedCards.some((el) => el === randomCardsNum)) {
+        displayedCards.push(randomCardsNum);
+        const question = initCards[randomCardsNum].question;
+        const answer = initCards[randomCardsNum].answer;
+
+        if (question.trim() && answer.trim()) {
+          const newCard = { question, answer };
+
+          cardsData.push(newCard);
+          setCardsData(cardsData);
+        }
+
+        count++;
       }
-    });
+    }
   }
 }
 
@@ -113,7 +146,7 @@ createCards();
 
 // Event Listeners
 
-// NExt button
+// Next button
 nextBtn.addEventListener("click", () => {
   cardsEl[currentActiveCard].className = "card left";
 
